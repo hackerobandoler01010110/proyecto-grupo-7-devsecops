@@ -1,6 +1,6 @@
 === A02 - Criptografia debil (token en claro) ===
 Comando: curl -X POST http://localhost:3000/contratos -H Content-Type: application/json -d {"propiedad_id":1,"arrendatario_id":2,"confidencial":"Renta $450.000"}
 --- Respuesta ---
-{"mensaje":"Contrato creado","token_verificacion":"TKN-3580"}
+{"mensaje":"Contrato creado","token_verificacion":"TKN-73154"}
 HTTP_STATUS:200
 

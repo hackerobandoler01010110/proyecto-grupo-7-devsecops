@@ -1,11 +1,11 @@
-Auditoria PropNet API - Fri Oct  2 20:05:36 UTC 2026
+Auditoria PropNet API - Fri Oct  2 17:50:25 HSP 2026
 Base URL: http://localhost:3000
 ----------------------------------------
 {"mensaje":"Valor de arriendo actualizado","id":"1","precio":1}
 HTTP_STATUS:200
 
 ----------------------------------------
-{"mensaje":"Contrato creado","token_verificacion":"TKN-3580"}
+{"mensaje":"Contrato creado","token_verificacion":"TKN-73154"}
 HTTP_STATUS:200
 
 ----------------------------------------
@@ -21,7 +21,7 @@ HTTP_STATUS:200
 HTTP_STATUS:200
 
 ----------------------------------------
-{"error":"Error interno","stack":"Error: near \")\": syntax error\n    at e.handleError (/home/claude/propnet/src/vulnerable/node_modules/sql.js/dist/sql-wasm.js:90:226)\n    at e.exec (/home/claude/propnet/src/vulnerable/node_modules/sql.js/dist/sql-wasm.js:87:468)\n    at Object.rawQuery (/home/claude/propnet/src/vulnerable/db.js:68:33)\n    at /home/claude/propnet/src/vulnerable/server.js:88:27\n    at Layer.handle [as handle_request] (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/layer.js:95:5)\n    at /home/claude/propnet/src/vulnerable/node_modules/express/lib/router/index.js:284:15\n    at Function.process_params (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/index.js:346:12)"}
+{"error":"Error interno","stack":"Error: near \")\": syntax error\n    at e.handleError (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\sql.js\\dist\\sql-wasm.js:90:226)\n    at e.exec (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\sql.js\\dist\\sql-wasm.js:87:468)\n    at Object.rawQuery (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\db.js:68:33)\n    at C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\server.js:88:27\n    at Layer.handle [as handle_request] (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\express\\lib\\router\\index.js:346:12)"}
 HTTP_STATUS:500
 
 ----------------------------------------
@@ -48,7 +48,7 @@ HTTP_STATUS:200
 HTTP_STATUS:200
 
 ----------------------------------------
-{"mensaje":"Descarga completada","url":"http://127.0.0.1:9999/latest/meta-data/","contenido_parcial":"{\"iam/security-credentials\":\"propnet-role\",\"instance-id\":\"i-0demo1234567890\",\"local-ipv4\":\"127.0.0.1\"}"}
-HTTP_STATUS:200
+{"error":"Error interno","stack":"FetchError: request to http://127.0.0.1:9999/latest/meta-data/ failed, reason: connect ECONNREFUSED 127.0.0.1:9999\n    at ClientRequest.<anonymous> (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\node-fetch\\lib\\index.js:1461:11)\n    at ClientRequest.emit (node:events:518:28)\n    at emitErrorEvent (node:_http_client:104:11)\n    at Socket.socketErrorListener (node:_http_client:518:5)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}
+HTTP_STATUS:500
 
 ----------------------------------------
