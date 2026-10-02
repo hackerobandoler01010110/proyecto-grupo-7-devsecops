@@ -7,8 +7,13 @@ evaluación "Ética, Gobernanza (ISO/IEC 27034) y Seguridad Aplicada
 ## Integrantes
 
 - David Zamorano — rol
+<<<<<<< HEAD
 - Giancarlo Guarda — rol
 - Marcelo Astudillo — rol
+=======
+- Marcelo Astudillo — rol
+- Giancarlo Guarda — rol
+>>>>>>> 1120c315bd160697c2c4cbec7663c5228f72f8d4
 
 ## Estructura del repositorio
 
