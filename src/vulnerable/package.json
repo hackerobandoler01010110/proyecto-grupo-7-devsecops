@@ -1,0 +1,17 @@
+{
+  "name": "propnet-vulnerable",
+  "version": "1.0.0",
+  "description": "PropNet API - version vulnerable (Grupo 7 - OWASP Top 10)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sql.js": "^1.10.3",
+    "node-fetch": "2.6.1",
+    "moment": "2.24.0",
+    "leaflet": "1.6.0"
+  }
+}

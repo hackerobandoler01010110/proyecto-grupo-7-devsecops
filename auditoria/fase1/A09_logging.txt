@@ -1,0 +1,6 @@
+=== A09 - Acceso sin registro a contrato ===
+Comando: curl -X GET http://localhost:3000/contratos/1
+--- Respuesta ---
+{"id":1,"propiedad_id":1,"arrendatario_id":2,"token_verificacion":"TKN-83920","confidencial":"Renta liquida mensual $450.000, aval: Maria Propietaria"}
+HTTP_STATUS:200
+

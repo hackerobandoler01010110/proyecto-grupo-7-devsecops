@@ -1,0 +1,6 @@
+=== A04 - Conflicto de reservas (reserva 2, mismo horario) ===
+Comando: curl -X POST http://localhost:3000/visitas -H Content-Type: application/json -d {"propiedad_id":1,"fecha":"2026-10-10","hora":"10:00","visitante":"Persona B"}
+--- Respuesta ---
+{"mensaje":"Visita agendada sin control de conflictos","propiedad_id":1,"fecha":"2026-10-10","hora":"10:00"}
+HTTP_STATUS:200
+

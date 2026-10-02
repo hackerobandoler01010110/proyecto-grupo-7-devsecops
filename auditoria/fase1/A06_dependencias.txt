@@ -1,0 +1,23 @@
+=== A06 - Dependencias vulnerables ===
+# npm audit report
+
+moment  <=2.29.3
+Severity: high
+Path Traversal: 'dir/../../filename' in moment.locale - https://github.com/advisories/GHSA-8hfj-j24r-96c4
+Moment.js vulnerable to Inefficient Regular Expression Complexity - https://github.com/advisories/GHSA-wc69-rhjr-hc9g
+fix available via `npm audit fix --force`
+Will install moment@2.31.0, which is outside the stated dependency range
+node_modules/moment
+
+node-fetch  <2.6.7
+Severity: high
+node-fetch forwards secure headers to untrusted sites - https://github.com/advisories/GHSA-r683-j2x4-v87g
+fix available via `npm audit fix --force`
+Will install node-fetch@2.7.0, which is outside the stated dependency range
+node_modules/node-fetch
+
+2 high severity vulnerabilities
+
+To address all issues, run:
+  npm audit fix --force
+Ejecutar manualmente: cd src/vulnerable && npm audit

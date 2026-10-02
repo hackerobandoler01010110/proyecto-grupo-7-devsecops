@@ -1,0 +1,54 @@
+Auditoria PropNet API - Fri Oct  2 20:05:36 UTC 2026
+Base URL: http://localhost:3000
+----------------------------------------
+{"mensaje":"Valor de arriendo actualizado","id":"1","precio":1}
+HTTP_STATUS:200
+
+----------------------------------------
+{"mensaje":"Contrato creado","token_verificacion":"TKN-3580"}
+HTTP_STATUS:200
+
+----------------------------------------
+[{"id":1,"propietario_id":1,"titulo":"Depto 2D1B Providencia","descripcion":"Luminoso depto cerca del metro.","comuna":"Providencia","precio":1},{"id":2,"propietario_id":1,"titulo":"Casa 3D2B Ñuñoa","descripcion":"Casa con patio, ideal para familia.","comuna":"Ñuñoa","precio":700000}]
+HTTP_STATUS:200
+
+----------------------------------------
+{"mensaje":"Visita agendada sin control de conflictos","propiedad_id":1,"fecha":"2026-10-10","hora":"10:00"}
+HTTP_STATUS:200
+
+----------------------------------------
+{"mensaje":"Visita agendada sin control de conflictos","propiedad_id":1,"fecha":"2026-10-10","hora":"10:00"}
+HTTP_STATUS:200
+
+----------------------------------------
+{"error":"Error interno","stack":"Error: near \")\": syntax error\n    at e.handleError (/home/claude/propnet/src/vulnerable/node_modules/sql.js/dist/sql-wasm.js:90:226)\n    at e.exec (/home/claude/propnet/src/vulnerable/node_modules/sql.js/dist/sql-wasm.js:87:468)\n    at Object.rawQuery (/home/claude/propnet/src/vulnerable/db.js:68:33)\n    at /home/claude/propnet/src/vulnerable/server.js:88:27\n    at Layer.handle [as handle_request] (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/layer.js:95:5)\n    at /home/claude/propnet/src/vulnerable/node_modules/express/lib/router/index.js:284:15\n    at Function.process_params (/home/claude/propnet/src/vulnerable/node_modules/express/lib/router/index.js:346:12)"}
+HTTP_STATUS:500
+
+----------------------------------------
+=== A06 - Dependencias vulnerables ===
+# npm audit report
+
+moment  <=2.29.3
+Severity: high
+Path Traversal: 'dir/../../filename' in moment.locale - https://github.com/advisories/GHSA-8hfj-j24r-96c4
+Moment.js vulnerable to Inefficient Regular Expression Complexity - https://github.com/advisories/GHSA-wc69-rhjr-hc9g
+fix available via `npm audit fix --force`
+Will install moment@2.31.0, which is outside the stated dependency range
+node_modules/moment
+----------------------------------------
+{"mensaje":"PIN enviado por SMS","usuario_id":2}
+HTTP_STATUS:200
+
+----------------------------------------
+{"mensaje":"Propiedad publicada"}
+HTTP_STATUS:200
+
+----------------------------------------
+{"id":1,"propiedad_id":1,"arrendatario_id":2,"token_verificacion":"TKN-83920","confidencial":"Renta liquida mensual $450.000, aval: Maria Propietaria"}
+HTTP_STATUS:200
+
+----------------------------------------
+{"mensaje":"Descarga completada","url":"http://127.0.0.1:9999/latest/meta-data/","contenido_parcial":"{\"iam/security-credentials\":\"propnet-role\",\"instance-id\":\"i-0demo1234567890\",\"local-ipv4\":\"127.0.0.1\"}"}
+HTTP_STATUS:200
+
+----------------------------------------
