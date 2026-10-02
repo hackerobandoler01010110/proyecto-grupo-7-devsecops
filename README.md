@@ -6,7 +6,7 @@ evaluación "Ética, Gobernanza (ISO/IEC 27034) y Seguridad Aplicada
 
 ## Integrantes
 
-- David Zamorano — rol
+- David Zamorano — Líder técnico / DevSecOps
 - Giancarlo Guarda — rol
 - Marcelo Astudillo — rol
 
