@@ -1,4 +1,7 @@
 === A06 - Dependencias vulnerables ===
+Fecha: Sun, Oct  4, 2026  4:49:28 PM
+Directorio: src/vulnerable
+
 # npm audit report
 
 moment  <=2.29.3
@@ -20,4 +23,3 @@ node_modules/node-fetch
 
 To address all issues, run:
   npm audit fix --force
-Ejecutar manualmente: cd src/vulnerable && npm audit

