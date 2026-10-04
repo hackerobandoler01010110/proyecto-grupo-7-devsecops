@@ -1,0 +1,21 @@
+=== A02 - Token de contrato: hash en reposo y nunca en la respuesta ===
+Fecha: Sun, Oct  4, 2026  3:57:14 PM
+Objetivo: http://localhost:3000
+
+--- Crear contrato (propietaria) ---
+Comando: curl -X POST http://localhost:3000/contratos -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"propiedad_id":1,"arrendatario_id":2,"confidencial":"Renta $450.000"}
+Respuesta:
+{"mensaje":"Contrato creado. El token de verificacion fue enviado al arrendatario por un canal seguro.","contrato_id":3}
+HTTP_STATUS:201
+
+[PASS] Contrato creado -> HTTP 201
+[PASS] La respuesta no contiene el token en claro
+--- Lectura del contrato por el arrendatario ---
+Comando: curl http://localhost:3000/contratos/3 -H Authorization: Bearer <TOKEN_JUAN>
+Respuesta:
+{"id":3,"propiedad_id":1,"arrendatario_id":2,"verificado":false,"confidencial":"Renta $450.000","creado_en":"2026-10-04T18:57:14.522Z"}
+HTTP_STATUS:200
+
+[PASS] El arrendatario lee su contrato -> HTTP 200
+[PASS] La lectura del contrato no expone token ni hash
+Nota: en la base solo se guarda HMAC-SHA256 del token y el texto confidencial va cifrado (AES-256-GCM); se verifica en test/integracion.test.js.

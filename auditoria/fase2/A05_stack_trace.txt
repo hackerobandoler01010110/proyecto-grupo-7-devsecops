@@ -1,0 +1,50 @@
+=== A05 - Errores genericos y cabeceras de seguridad ===
+Fecha: Sun, Oct  4, 2026  3:57:17 PM
+Objetivo: http://localhost:3000
+
+--- Entrada que antes provocaba stack trace ---
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=X --data-urlencode precio_max=NOT_A_NUMBER); DROP TABLE propiedades;--
+Respuesta:
+{"error":"Solicitud invalida","detalles":["comuna no pertenece a la lista de comunas permitidas"]}
+HTTP_STATUS:400
+
+[PASS] Entrada maliciosa -> HTTP 400
+[PASS] Sin rutas ni stack trace en la respuesta
+--- JSON mal formado ---
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email": 
+Respuesta:
+{"error":"JSON invalido"}
+HTTP_STATUS:400
+
+[PASS] JSON invalido -> HTTP 400
+[PASS] Error de parseo sin detalles internos
+--- Ruta inexistente ---
+Comando: curl http://localhost:3000/admin/config
+Respuesta:
+{"error":"Recurso no encontrado"}
+HTTP_STATUS:404
+
+[PASS] Ruta inexistente -> HTTP 404
+--- Cabeceras de respuesta ---
+Comando: curl -i http://localhost:3000/salud
+Respuesta:
+HTTP/1.1 200 OK
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: no-referrer
+Cache-Control: no-store
+Content-Security-Policy: default-src 'none'; frame-ancestors 'none'
+Cross-Origin-Resource-Policy: same-origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 15
+ETag: W/"f-zEyU8uspYexNXQo+eM6rxYB/Bc0"
+Date: Sun, 04 Oct 2026 18:57:17 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"estado":"ok"}
+HTTP_STATUS:200
+
+[PASS] No se anuncia X-Powered-By
+[PASS] Cabecera X-Content-Type-Options: nosniff presente
+[PASS] Cabecera Content-Security-Policy presente

@@ -1,0 +1,103 @@
+=== A07 - Autenticacion robusta (PIN 6 digitos, un solo uso, limite de intentos) ===
+Fecha: Sun, Oct  4, 2026  3:56:11 PM
+Objetivo: http://localhost:3000
+
+--- Preparacion: solicitar PIN para maria@propnet.cl ---
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email":"maria@propnet.cl"}
+Respuesta:
+{"mensaje":"Si el correo esta registrado, se envio un PIN de 6 digitos por SMS. Expira en 5 minutos."}
+HTTP_STATUS:200
+
+--- Preparacion: verificar PIN de maria@propnet.cl (PIN = <PIN_ENTREGADO_POR_SMS>) ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"maria@propnet.cl","pin":"020218"}
+Respuesta:
+{"autenticado":true,"token":"<TOKEN_OCULTO>","tipo":"Bearer","expira_en":"2026-10-04T19:56:45.306Z"}
+HTTP_STATUS:200
+
+--- Preparacion: solicitar PIN para juan@propnet.cl ---
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email":"juan@propnet.cl"}
+Respuesta:
+{"mensaje":"Si el correo esta registrado, se envio un PIN de 6 digitos por SMS. Expira en 5 minutos."}
+HTTP_STATUS:200
+
+--- Preparacion: verificar PIN de juan@propnet.cl (PIN = <PIN_ENTREGADO_POR_SMS>) ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"706595"}
+Respuesta:
+{"autenticado":true,"token":"<TOKEN_OCULTO>","tipo":"Bearer","expira_en":"2026-10-04T19:57:13.111Z"}
+HTTP_STATUS:200
+
+
+##### Pruebas de endurecimiento #####
+--- Solicitar PIN con correo registrado ---
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email":"pedro@propnet.cl"}
+Respuesta:
+{"mensaje":"Si el correo esta registrado, se envio un PIN de 6 digitos por SMS. Expira en 5 minutos."}
+HTTP_STATUS:200
+
+[PASS] Solicitud de PIN aceptada -> HTTP 200
+[PASS] El PIN no viaja en la respuesta HTTP
+--- Solicitar PIN con correo inexistente ---
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email":"nadie@propnet.cl"}
+Respuesta:
+{"mensaje":"Si el correo esta registrado, se envio un PIN de 6 digitos por SMS. Expira en 5 minutos."}
+HTTP_STATUS:200
+
+[PASS] Misma respuesta exista o no el correo (sin enumeracion)
+--- PIN de 3 digitos (formato antiguo) ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"123"}
+Respuesta:
+{"error":"Solicitud invalida","detalles":["pin debe tener 6 digitos"]}
+HTTP_STATUS:400
+
+[PASS] PIN de 3 digitos rechazado -> HTTP 400
+--- Reutilizar el PIN que ya se uso para iniciar sesion (PIN = <PIN_YA_USADO>) ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"706595"}
+Respuesta:
+{"autenticado":false,"error":"PIN invalido o expirado"}
+HTTP_STATUS:401
+
+[PASS] PIN de un solo uso: la reutilizacion es rechazada -> HTTP 401
+--- Pedir un PIN nuevo para juan y adivinar a ciegas (fuerza bruta) ---
+Comando: curl -X POST http://localhost:3000/login -H Content-Type: application/json -d {"email":"juan@propnet.cl"}
+Respuesta:
+{"mensaje":"Si el correo esta registrado, se envio un PIN de 6 digitos por SMS. Expira en 5 minutos."}
+HTTP_STATUS:200
+
+--- Intento de fuerza bruta 1 con PIN incorrecto ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"000000"}
+Respuesta:
+{"autenticado":false,"error":"PIN invalido o expirado"}
+HTTP_STATUS:401
+
+--- Intento de fuerza bruta 2 con PIN incorrecto ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"000000"}
+Respuesta:
+{"autenticado":false,"error":"PIN invalido o expirado"}
+HTTP_STATUS:401
+
+--- Intento de fuerza bruta 3 con PIN incorrecto ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"000000"}
+Respuesta:
+{"autenticado":false,"error":"PIN invalido o expirado"}
+HTTP_STATUS:401
+
+--- Intento de fuerza bruta 4 con PIN incorrecto ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"000000"}
+Respuesta:
+{"autenticado":false,"error":"PIN invalido o expirado"}
+HTTP_STATUS:401
+
+--- Intento de fuerza bruta 5 con PIN incorrecto ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"000000"}
+Respuesta:
+{"error":"PIN bloqueado por demasiados intentos. Solicita uno nuevo."}
+HTTP_STATUS:429
+
+--- Intento de fuerza bruta 6 con PIN incorrecto ---
+Comando: curl -X POST http://localhost:3000/login/verificar -H Content-Type: application/json -d {"email":"juan@propnet.cl","pin":"000000"}
+Respuesta:
+{"error":"PIN bloqueado por demasiados intentos. Solicita uno nuevo."}
+HTTP_STATUS:429
+
+[PASS] Fuerza bruta bloqueada tras 5 intentos (401 x4, luego 429)
+Nota: la expiracion (5 min) se verifica en test/integracion.test.js; no se espera 5 minutos en esta auditoria.

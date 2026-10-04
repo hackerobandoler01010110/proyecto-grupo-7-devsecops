@@ -1,0 +1,39 @@
+=== A03 - Buscador: consultas parametrizadas + lista blanca + regex ===
+Fecha: Sun, Oct  4, 2026  3:57:14 PM
+Objetivo: http://localhost:3000
+
+--- Payload clasico en comuna ---
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=' OR '1'='1 --data-urlencode precio_max=999999999
+Respuesta:
+{"error":"Solicitud invalida","detalles":["comuna no pertenece a la lista de comunas permitidas"]}
+HTTP_STATUS:400
+
+[PASS] ' OR '1'='1 no altera la consulta -> HTTP 400
+--- UNION SELECT en comuna ---
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=Providencia' UNION SELECT id,email,rol,telefono,1,2 FROM usuarios--
+Respuesta:
+{"error":"Solicitud invalida","detalles":["comuna invalida"]}
+HTTP_STATUS:400
+
+[PASS] UNION SELECT rechazado -> HTTP 400
+--- Inyeccion en precio_max ---
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=Providencia --data-urlencode precio_max=1 OR 1=1
+Respuesta:
+{"error":"Solicitud invalida","detalles":["precio_max debe ser numerico"]}
+HTTP_STATUS:400
+
+[PASS] precio_max no numerico rechazado -> HTTP 400
+--- DROP TABLE en precio_max ---
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=X --data-urlencode precio_max=NOT_A_NUMBER); DROP TABLE propiedades;--
+Respuesta:
+{"error":"Solicitud invalida","detalles":["comuna no pertenece a la lista de comunas permitidas"]}
+HTTP_STATUS:400
+
+[PASS] DROP TABLE rechazado -> HTTP 400
+--- Control positivo: busqueda legitima ---
+Comando: curl -G http://localhost:3000/propiedades/buscar --data-urlencode comuna=Providencia --data-urlencode precio_max=1000000
+Respuesta:
+[{"id":1,"titulo":"Depto 2D1B Providencia","descripcion":"Luminoso depto cerca del metro.","comuna":"Providencia","precio":450000}]
+HTTP_STATUS:200
+
+[PASS] La busqueda legitima sigue funcionando -> HTTP 200

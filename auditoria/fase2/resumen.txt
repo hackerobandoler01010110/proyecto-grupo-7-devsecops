@@ -1,0 +1,85 @@
+Auditoria PropNet API - Sun, Oct  4, 2026  3:56:10 PM
+Modo: fase2
+Base URL: http://localhost:3000
+----------------------------------------
+
+## A01 - Control de acceso roto
+[PASS] Sin sesion no se puede cambiar el precio -> HTTP 401
+[PASS] Arrendatario no puede alterar el valor del arriendo -> HTTP 403
+[PASS] Arrendatario no puede modificar datos del propietario -> HTTP 403
+[PASS] Un propietario no puede alterar propiedades de otro -> HTTP 403
+[PASS] Campos no permitidos (rol) rechazados -> HTTP 400
+[PASS] El dueño si puede modificar su propiedad (precio valido) -> HTTP 200
+
+## A02 - Fallas criptograficas
+[PASS] Contrato creado -> HTTP 201
+[PASS] La respuesta no contiene el token en claro
+[PASS] El arrendatario lee su contrato -> HTTP 200
+[PASS] La lectura del contrato no expone token ni hash
+
+## A03 - Inyeccion SQL
+[PASS] ' OR '1'='1 no altera la consulta -> HTTP 400
+[PASS] UNION SELECT rechazado -> HTTP 400
+[PASS] precio_max no numerico rechazado -> HTTP 400
+[PASS] DROP TABLE rechazado -> HTTP 400
+[PASS] La busqueda legitima sigue funcionando -> HTTP 200
+
+## A04 - Diseño inseguro (reservas)
+[PASS] Primera reserva aceptada -> HTTP 201
+[PASS] Segunda reserva en el mismo horario -> HTTP 409
+[PASS] Hora 03:00 rechazada -> HTTP 400
+[PASS] Fecha pasada rechazada -> HTTP 400
+[PASS] Reservar exige sesion -> HTTP 401
+
+## A05 - Mala configuracion / exposicion de errores
+[PASS] Entrada maliciosa -> HTTP 400
+[PASS] Sin rutas ni stack trace en la respuesta
+[PASS] JSON invalido -> HTTP 400
+[PASS] Error de parseo sin detalles internos
+[PASS] Ruta inexistente -> HTTP 404
+[PASS] No se anuncia X-Powered-By
+[PASS] Cabecera X-Content-Type-Options: nosniff presente
+[PASS] Cabecera Content-Security-Policy presente
+
+## A06 - Dependencias vulnerables
+=== A06 - Dependencias vulnerables ===
+Fecha: Sun, Oct  4, 2026  3:57:18 PM
+Directorio: ./src/seguro
+
+found 0 vulnerabilities
+----------------------------------------
+[PASS] npm audit: 0 vulnerabilidades
+
+## A07 - Autenticacion debil
+[PASS] Solicitud de PIN aceptada -> HTTP 200
+[PASS] El PIN no viaja en la respuesta HTTP
+[PASS] Misma respuesta exista o no el correo (sin enumeracion)
+[PASS] PIN de 3 digitos rechazado -> HTTP 400
+[PASS] PIN de un solo uso: la reutilizacion es rechazada -> HTTP 401
+[PASS] Fuerza bruta bloqueada tras 5 intentos (401 x4, luego 429)
+
+## A08 - XSS persistente
+[PASS] <script> no se guarda -> HTTP 400
+[PASS] <img onerror> rechazado -> HTTP 400
+[PASS] Publicacion legitima aceptada -> HTTP 201
+[PASS] La pagina no contiene <script>
+[PASS] CSP restrictiva en la vista HTML
+
+## A09 - Registro y monitoreo
+[PASS] Acceso a contrato sin sesion -> HTTP 401
+[PASS] Acceso a contrato ajeno -> HTTP 403
+[PASS] Acceso a contrato propio -> HTTP 200
+[PASS] access.log registra 2 accesos denegados y 1 autorizado
+
+## A10 - SSRF
+[PASS] Descarga sin sesion -> HTTP 401
+[PASS] Descarga por un rol no autorizado -> HTTP 403
+[PASS] Bloqueado: http://127.0.0.1:9999/latest/meta-data/ -> HTTP 400
+[PASS] Bloqueado: http://169.254.169.254/latest/meta-data/ -> HTTP 400
+[PASS] Bloqueado: http://localhost:3000/ -> HTTP 400
+[PASS] Bloqueado: https://127.0.0.1/ -> HTTP 400
+[PASS] Bloqueado: http://2130706433/ -> HTTP 400
+[PASS] Bloqueado: file:///etc/passwd -> HTTP 400
+[PASS] Bloqueado: https://evil.example.com/x.png -> HTTP 400
+----------------------------------------
+RESULTADO FASE 2: PASS=53 FAIL=0 OMITIDO=0

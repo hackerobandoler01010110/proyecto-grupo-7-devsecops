@@ -1,0 +1,47 @@
+=== A08 - Descripcion sin HTML + escape de salida + CSP ===
+Fecha: Sun, Oct  4, 2026  3:57:21 PM
+Objetivo: http://localhost:3000
+
+--- Publicar descripcion con <script> ---
+Comando: curl -X POST http://localhost:3000/propiedades -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"titulo":"Depto con XSS","descripcion":"<script>alert(1)</script>","comuna":"Providencia","precio":400000}
+Respuesta:
+{"error":"Solicitud invalida","detalles":["descripcion contiene caracteres no permitidos"]}
+HTTP_STATUS:400
+
+[PASS] <script> no se guarda -> HTTP 400
+--- Publicar titulo con <img onerror> ---
+Comando: curl -X POST http://localhost:3000/propiedades -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"titulo":"<img src=x onerror=alert(1)>","descripcion":"Texto normal","comuna":"Providencia","precio":400000}
+Respuesta:
+{"error":"Solicitud invalida","detalles":["titulo contiene caracteres no permitidos"]}
+HTTP_STATUS:400
+
+[PASS] <img onerror> rechazado -> HTTP 400
+--- Control positivo: publicar propiedad legitima ---
+Comando: curl -X POST http://localhost:3000/propiedades -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"titulo":"Depto luminoso","descripcion":"Cerca del metro, gastos comunes aparte.","comuna":"Providencia","precio":400000}
+Respuesta:
+{"mensaje":"Propiedad publicada","id":4}
+HTTP_STATUS:201
+
+[PASS] Publicacion legitima aceptada -> HTTP 201
+--- Ver la propiedad (cabeceras + HTML) ---
+Comando: curl -i http://localhost:3000/propiedades/4
+Respuesta:
+HTTP/1.1 200 OK
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: no-referrer
+Cache-Control: no-store
+Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'
+Cross-Origin-Resource-Policy: same-origin
+Content-Type: text/html; charset=utf-8
+Content-Length: 110
+ETag: W/"6e-7+W0cnMV2qHIkxSS0a2UItG8+DI"
+Date: Sun, 04 Oct 2026 18:57:22 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!doctype html><meta charset="utf-8"><h1>Depto luminoso</h1><div>Cerca del metro, gastos comunes aparte.</div>
+HTTP_STATUS:200
+
+[PASS] La pagina no contiene <script>
+[PASS] CSP restrictiva en la vista HTML
