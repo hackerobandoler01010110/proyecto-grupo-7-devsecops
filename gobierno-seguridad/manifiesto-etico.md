@@ -32,6 +32,20 @@ fraudes sobre un contrato real.
    dígitos por SMS parecen inofensivas en el corto plazo, pero trasladan
    el riesgo a personas que no pueden decidir sobre esa implementación.
 
+## Cómo se refleja en PropNet
+
+Estos principios no se quedan en declaraciones: cada uno tiene una
+decisión concreta en el código de `src/seguro/`.
+
+| Principio | Decisión en el código |
+|---|---|
+| Responsabilidad sobre el código propio | Cada cambio pasa por Pull Request y por pruebas automatizadas (`npm test`) antes de llegar a `main` |
+| Minimización de datos | Los logs guardan identificadores, no el contenido de los contratos; el PIN y los tokens nunca se escriben en los logs ni viajan en las respuestas |
+| Cuidado del dato ajeno | Solo las partes de un contrato pueden leerlo; el texto confidencial se guarda cifrado; un usuario solo modifica su propio perfil |
+| Transparencia ante el fallo | Cada error interno genera un identificador de incidente que permite ubicar el detalle en `errores.log`, y todo acceso denegado queda registrado en lugar de silenciarse |
+| Seguridad por diseño | La reserva de visitas se protege con una restricción `UNIQUE` en la base de datos, y no solo con una validación previa en el código |
+| El atajo tiene un costo para otro | El PIN pasó de 3 a 6 dígitos con expiración y un solo uso, y los tokens se guardan como hash; ambos son los atajos que la versión vulnerable toma a propósito |
+
 ## Compromiso del equipo
 
 Nos comprometemos a auditar nuestro propio código con el mismo rigor con
@@ -40,5 +54,18 @@ vulnerabilidades encontradas (incluidas las que nosotros mismos
 introdujimos para esta evaluación) y a priorizar la corrección de los
 riesgos de mayor impacto sobre los de menor esfuerzo.
 
-*(Este documento es un punto de partida. Complétalo con ejemplos propios
-del caso PropNet y con la firma/nombre de cada integrante.)*
+En coherencia con ese compromiso, las limitaciones que aún tiene la
+versión segura (límites de tasa en memoria, canal de PIN simulado, logs
+sin rotación y evidencia generada desde el mismo equipo) no se ocultan:
+están registradas como excepciones en `ONF.md`, sección 5.
+
+También asumimos que `src/vulnerable/` se mantiene como material de
+estudio y no se despliega ni se expone a redes públicas.
+
+## Integrantes
+
+| Integrante | Rol | Firma |
+|---|---|---|
+| David Zamorano | Líder técnico / DevSecOps | David |
+| Giancarlo Guarda | Desarrollador | Gianca |
+| Marcelo Astudillo | Auditor / Pentester | Marcelo |
