@@ -1,0 +1,6 @@
+=== A06 - Dependencias vulnerables ===
+Fecha: Sun, Oct  4, 2026  3:57:18 PM
+Directorio: ./src/seguro
+
+found 0 vulnerabilities
+[PASS] npm audit: 0 vulnerabilidades

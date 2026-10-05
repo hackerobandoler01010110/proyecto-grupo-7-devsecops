@@ -1,0 +1,11 @@
+=== A04 - Reserva 1 (propiedad 1, horario libre) ===
+Fecha: Sun, Oct  4, 2026  3:57:15 PM
+Objetivo: http://localhost:3000
+
+--- Visita de Juan ---
+Comando: curl -X POST http://localhost:3000/visitas -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"propiedad_id":1,"fecha":"2027-01-12","hora":"09:00","visitante":"Juan Arrendatario"}
+Respuesta:
+{"mensaje":"Visita agendada","id":1,"propiedad_id":1,"fecha":"2027-01-12","hora":"09:00"}
+HTTP_STATUS:201
+
+[PASS] Primera reserva aceptada -> HTTP 201

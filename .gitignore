@@ -2,3 +2,8 @@ node_modules/
 *.db
 *.log
 .DS_Store
+
+src/seguro/.secret
+src/seguro/logs/
+src/seguro/*.db.tmp
+src/seguro/salida.txt

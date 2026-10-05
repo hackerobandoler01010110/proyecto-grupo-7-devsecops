@@ -1,17 +1,19 @@
 {
-  "name": "propnet-vulnerable",
+  "name": "propnet-seguro",
   "version": "1.0.0",
-  "description": "PropNet API - version vulnerable (Grupo 7 - OWASP Top 10)",
+  "description": "PropNet API - version segura (Grupo 7 - OWASP Top 10)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "test": "node --test test/unit.test.js test/integracion.test.js",
+    "audit": "npm audit --audit-level=low"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "sql.js": "^1.10.3",
-    "node-fetch": "2.6.1",
-    "moment": "2.24.0",
-    "leaflet": "1.6.0"
+    "express": "^4.21.2",
+    "sql.js": "^1.12.0"
   }
 }

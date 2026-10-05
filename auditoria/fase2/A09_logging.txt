@@ -1,0 +1,31 @@
+=== A09 - Todo acceso a contratos queda registrado (autorizado y denegado) ===
+Fecha: Sun, Oct  4, 2026  3:57:22 PM
+Objetivo: http://localhost:3000
+
+--- Sin sesion ---
+Comando: curl http://localhost:3000/contratos/1
+Respuesta:
+{"error":"No autenticado"}
+HTTP_STATUS:401
+
+[PASS] Acceso a contrato sin sesion -> HTTP 401
+--- Arrendatario ajeno al contrato 2 (de Pedro) ---
+Comando: curl http://localhost:3000/contratos/2 -H Authorization: Bearer <TOKEN_JUAN>
+Respuesta:
+{"error":"No autorizado"}
+HTTP_STATUS:403
+
+[PASS] Acceso a contrato ajeno -> HTTP 403
+--- Arrendatario accede a SU contrato ---
+Comando: curl http://localhost:3000/contratos/1 -H Authorization: Bearer <TOKEN_JUAN>
+Respuesta:
+{"id":1,"propiedad_id":1,"arrendatario_id":2,"verificado":false,"confidencial":"Renta liquida mensual $450.000, aval: Maria Propietaria","creado_en":"2026-10-04T18:45:20.415Z"}
+HTTP_STATUS:200
+
+[PASS] Acceso a contrato propio -> HTTP 200
+--- Entradas nuevas en access.log (./src/seguro/logs/access.log) ---
+{"ts":"2026-10-04T18:57:22.537Z","nivel":"INFO","evento":"acceso_contrato","ip":"127.0.0.1","metodo":"GET","ruta":"/contratos/1","usuario_id":null,"contrato_id":null,"estado":401,"resultado":"denegado","motivo":null}
+{"ts":"2026-10-04T18:57:22.688Z","nivel":"INFO","evento":"acceso_contrato","ip":"127.0.0.1","metodo":"GET","ruta":"/contratos/2","usuario_id":2,"contrato_id":2,"estado":403,"resultado":"denegado","motivo":"usuario_no_es_parte_del_contrato"}
+{"ts":"2026-10-04T18:57:22.919Z","nivel":"INFO","evento":"acceso_contrato","ip":"127.0.0.1","metodo":"GET","ruta":"/contratos/1","usuario_id":2,"contrato_id":1,"estado":200,"resultado":"autorizado","motivo":null}
+
+[PASS] access.log registra 2 accesos denegados y 1 autorizado

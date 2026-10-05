@@ -1,0 +1,67 @@
+=== A10 - Lista blanca + bloqueo de IP privadas + solo https ===
+Fecha: Sun, Oct  4, 2026  3:57:23 PM
+Objetivo: http://localhost:3000
+
+--- Sin sesion ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Content-Type: application/json -d {"url":"https://images.unsplash.com/a.jpg"}
+Respuesta:
+{"error":"No autenticado"}
+HTTP_STATUS:401
+
+[PASS] Descarga sin sesion -> HTTP 401
+--- Arrendatario (rol no autorizado) ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"url":"https://images.unsplash.com/a.jpg"}
+Respuesta:
+{"error":"No autorizado"}
+HTTP_STATUS:403
+
+[PASS] Descarga por un rol no autorizado -> HTTP 403
+--- SSRF hacia http://127.0.0.1:9999/latest/meta-data/ ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"http://127.0.0.1:9999/latest/meta-data/"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: http://127.0.0.1:9999/latest/meta-data/ -> HTTP 400
+--- SSRF hacia http://169.254.169.254/latest/meta-data/ ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"http://169.254.169.254/latest/meta-data/"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: http://169.254.169.254/latest/meta-data/ -> HTTP 400
+--- SSRF hacia http://localhost:3000/ ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"http://localhost:3000/"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: http://localhost:3000/ -> HTTP 400
+--- SSRF hacia https://127.0.0.1/ ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"https://127.0.0.1/"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: https://127.0.0.1/ -> HTTP 400
+--- SSRF hacia http://2130706433/ ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"http://2130706433/"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: http://2130706433/ -> HTTP 400
+--- SSRF hacia file:///etc/passwd ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"file:///etc/passwd"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: file:///etc/passwd -> HTTP 400
+--- SSRF hacia https://evil.example.com/x.png ---
+Comando: curl -X POST http://localhost:3000/imagenes/descargar -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"url":"https://evil.example.com/x.png"}
+Respuesta:
+{"error":"URL no permitida"}
+HTTP_STATUS:400
+
+[PASS] Bloqueado: https://evil.example.com/x.png -> HTTP 400

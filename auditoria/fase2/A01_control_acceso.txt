@@ -1,0 +1,46 @@
+=== A01 - Control de acceso (autenticacion + propiedad del recurso) ===
+Fecha: Sun, Oct  4, 2026  3:57:13 PM
+Objetivo: http://localhost:3000
+
+--- Sin sesion: modificar precio ---
+Comando: curl -X PUT http://localhost:3000/arriendos/1 -H Content-Type: application/json -d {"precio":1}
+Respuesta:
+{"error":"No autenticado"}
+HTTP_STATUS:401
+
+[PASS] Sin sesion no se puede cambiar el precio -> HTTP 401
+--- Arrendatario intenta cambiar precio de propiedad ajena ---
+Comando: curl -X PUT http://localhost:3000/arriendos/1 -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"precio":100000}
+Respuesta:
+{"error":"No autorizado"}
+HTTP_STATUS:403
+
+[PASS] Arrendatario no puede alterar el valor del arriendo -> HTTP 403
+--- Arrendatario intenta modificar datos del propietario ---
+Comando: curl -X PUT http://localhost:3000/usuarios/1 -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"nombre":"Hackeado","telefono":"+56900000000"}
+Respuesta:
+{"error":"No autorizado"}
+HTTP_STATUS:403
+
+[PASS] Arrendatario no puede modificar datos del propietario -> HTTP 403
+--- Propietaria intenta cambiar precio de propiedad de otro propietario (id 3) ---
+Comando: curl -X PUT http://localhost:3000/arriendos/3 -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"precio":100000}
+Respuesta:
+{"error":"No autorizado"}
+HTTP_STATUS:403
+
+[PASS] Un propietario no puede alterar propiedades de otro -> HTTP 403
+--- Escalada de privilegios por mass assignment (campo rol) ---
+Comando: curl -X PUT http://localhost:3000/usuarios/2 -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"nombre":"Juan Perez","rol":"propietario"}
+Respuesta:
+{"error":"Solicitud invalida","detalles":["El cuerpo contiene campos no permitidos"]}
+HTTP_STATUS:400
+
+[PASS] Campos no permitidos (rol) rechazados -> HTTP 400
+--- Control positivo: la propietaria cambia el precio de SU propiedad ---
+Comando: curl -X PUT http://localhost:3000/arriendos/1 -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"precio":450000}
+Respuesta:
+{"mensaje":"Valor de arriendo actualizado","id":1,"precio":450000}
+HTTP_STATUS:200
+
+[PASS] El dueño si puede modificar su propiedad (precio valido) -> HTTP 200

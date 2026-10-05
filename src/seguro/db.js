@@ -1,76 +1,70 @@
-// db.js - Wrapper simple sobre sql.js (SQLite en WebAssembly, sin compilacion nativa)
-// Expone una API parecida a better-sqlite3: db.prepare(sql).run(...) / .get(...) / .all(...)
-// y persiste el contenido en disco (propnet.db) tras cada escritura.
+'use strict';
+// db.js - Wrapper sobre sql.js (SQLite en WebAssembly) con la misma API que la
+// version vulnerable, pero SIN rawQuery(): en src/seguro/ no existe ningun camino
+// para ejecutar SQL armado por concatenacion (A03). Todo va con parametros (?).
 
 const fs = require('fs');
 const path = require('path');
 const initSqlJs = require('sql.js');
 
-const DB_PATH = path.join(__dirname, 'propnet.db');
+const RUTA_POR_DEFECTO = path.join(__dirname, 'propnet.db');
 
-async function abrirBaseDatos() {
+// ruta === null -> base en memoria (tests).
+async function abrirBaseDatos(ruta = RUTA_POR_DEFECTO) {
   const SQL = await initSqlJs();
-  let sqljsDb;
+  const enMemoria = ruta === null;
+  const sqljsDb = !enMemoria && fs.existsSync(ruta)
+    ? new SQL.Database(fs.readFileSync(ruta))
+    : new SQL.Database();
 
-  if (fs.existsSync(DB_PATH)) {
-    const buffer = fs.readFileSync(DB_PATH);
-    sqljsDb = new SQL.Database(buffer);
-  } else {
-    sqljsDb = new SQL.Database();
-  }
-
+  // Escritura atomica (archivo temporal + rename) con permisos restrictivos.
   function guardar() {
-    const data = sqljsDb.export();
-    fs.writeFileSync(DB_PATH, Buffer.from(data));
+    if (enMemoria) return;
+    const tmp = ruta + '.tmp';
+    fs.writeFileSync(tmp, Buffer.from(sqljsDb.export()), { mode: 0o600 });
+    fs.renameSync(tmp, ruta);
   }
 
   return {
-    // Ejecuta SQL sin parametros (DDL: CREATE TABLE, DROP TABLE, etc.)
+    // Solo DDL / scripts fijos escritos por nosotros (nunca datos del usuario).
     exec(sql) {
       sqljsDb.run(sql);
       guardar();
     },
 
-    // Para SELECT ... WHERE x = ? con un solo resultado
     prepare(sql) {
       return {
         get(...params) {
           const stmt = sqljsDb.prepare(sql);
-          stmt.bind(params);
-          let row = null;
-          if (stmt.step()) {
-            row = stmt.getAsObject();
+          try {
+            stmt.bind(params);
+            return stmt.step() ? stmt.getAsObject() : null;
+          } finally {
+            stmt.free();
           }
-          stmt.free();
-          return row;
         },
         all(...params) {
           const stmt = sqljsDb.prepare(sql);
-          stmt.bind(params);
-          const rows = [];
-          while (stmt.step()) {
-            rows.push(stmt.getAsObject());
+          try {
+            stmt.bind(params);
+            const filas = [];
+            while (stmt.step()) filas.push(stmt.getAsObject());
+            return filas;
+          } finally {
+            stmt.free();
           }
-          stmt.free();
-          return rows;
         },
         run(...params) {
           sqljsDb.run(sql, params);
+          // OJO: leer estos valores ANTES de guardar(): export() reabre la base
+          // y reinicia last_insert_rowid().
+          const changes = sqljsDb.getRowsModified();
+          const r = sqljsDb.exec('SELECT last_insert_rowid()');
+          const lastInsertRowid = r.length ? r[0].values[0][0] : null;
           guardar();
-          return { changes: sqljsDb.getRowsModified() };
+          return { changes, lastInsertRowid };
         },
       };
-    },
-
-    // Variante que ejecuta SQL ya armado como texto plano (para la inyeccion SQL, A03)
-    // OJO: se usa a proposito sin parametros en el endpoint vulnerable.
-    rawQuery(sql) {
-      const resultado = sqljsDb.exec(sql); // [{columns:[], values:[[...]]}]
-      if (resultado.length === 0) return [];
-      const { columns, values } = resultado[0];
-      return values.map((fila) =>
-        Object.fromEntries(fila.map((valor, i) => [columns[i], valor]))
-      );
     },
 
     close() {

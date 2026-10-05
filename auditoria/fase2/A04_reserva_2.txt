@@ -1,0 +1,32 @@
+=== A04 - Reserva 2 en el MISMO horario ===
+Fecha: Sun, Oct  4, 2026  3:57:16 PM
+Objetivo: http://localhost:3000
+
+--- Visita de Maria, misma propiedad, fecha y hora ---
+Comando: curl -X POST http://localhost:3000/visitas -H Authorization: Bearer <TOKEN_MARIA> -H Content-Type: application/json -d {"propiedad_id":1,"fecha":"2027-01-12","hora":"09:00","visitante":"Maria Propietaria"}
+Respuesta:
+{"error":"Ya existe una visita agendada para esa propiedad en ese horario"}
+HTTP_STATUS:409
+
+[PASS] Segunda reserva en el mismo horario -> HTTP 409
+--- Hora fuera de los bloques permitidos ---
+Comando: curl -X POST http://localhost:3000/visitas -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"propiedad_id":1,"fecha":"2027-01-12","hora":"03:00"}
+Respuesta:
+{"error":"Solicitud invalida","detalles":["hora debe ser un bloque HH:00 o HH:30 entre 09:00 y 18:30"]}
+HTTP_STATUS:400
+
+[PASS] Hora 03:00 rechazada -> HTTP 400
+--- Fecha pasada ---
+Comando: curl -X POST http://localhost:3000/visitas -H Authorization: Bearer <TOKEN_JUAN> -H Content-Type: application/json -d {"propiedad_id":1,"fecha":"2020-01-01","hora":"10:00"}
+Respuesta:
+{"error":"Solicitud invalida","detalles":["fecha debe estar entre hoy y los proximos 180 dias"]}
+HTTP_STATUS:400
+
+[PASS] Fecha pasada rechazada -> HTTP 400
+--- Sin sesion ---
+Comando: curl -X POST http://localhost:3000/visitas -H Content-Type: application/json -d {"propiedad_id":1,"fecha":"2027-01-12","hora":"09:00"}
+Respuesta:
+{"error":"No autenticado"}
+HTTP_STATUS:401
+
+[PASS] Reservar exige sesion -> HTTP 401
